@@ -73,6 +73,7 @@ const COPY = {
     contactLead: "Conta o que você precisa e qual o prazo. Respondo em até 1 dia útil.",
     formName: "Nome",
     formEmail: "Email",
+    formPhone: "Telefone / WhatsApp",
     formProject: "Tipo de projeto",
     formProjectOptions: ["Sistema interno", "Automação / integração", "Infra / monitoramento", "Consultoria técnica", "Outro"],
     formMessage: "Sobre o projeto",
@@ -130,6 +131,7 @@ const COPY = {
     contactLead: "Tell me what you need and the timeline. I reply within 1 business day.",
     formName: "Name",
     formEmail: "Email",
+    formPhone: "Phone / WhatsApp",
     formProject: "Project type",
     formProjectOptions: ["Internal system", "Automation / integration", "Infra / monitoring", "Technical consulting", "Other"],
     formMessage: "About the project",
@@ -428,8 +430,25 @@ function Skills({ copy }) {
 const WEBHOOK_URL = "https://webhook-eggs.ackhub.app/webhook/617c8eae-6e39-464f-a492-70affae971b4-jribas";
 const WEBHOOK_TOKEN = "JRBQ8TF5LAMXCMJHHFQD6AIH28VPSK3Q9AK0O4U1Z0XHX6VO9Z2AQYBZEP42BLWL";
 
+const COUNTRY_CODES = [
+  { code: "BR", dial: "+55", label: "🇧🇷 +55" },
+  { code: "PT", dial: "+351", label: "🇵🇹 +351" },
+  { code: "US", dial: "+1",  label: "🇺🇸 +1" },
+  { code: "AR", dial: "+54", label: "🇦🇷 +54" },
+  { code: "UY", dial: "+598", label: "🇺🇾 +598" },
+  { code: "CL", dial: "+56", label: "🇨🇱 +56" },
+  { code: "CO", dial: "+57", label: "🇨🇴 +57" },
+  { code: "MX", dial: "+52", label: "🇲🇽 +52" },
+  { code: "ES", dial: "+34", label: "🇪🇸 +34" },
+  { code: "GB", dial: "+44", label: "🇬🇧 +44" },
+  { code: "DE", dial: "+49", label: "🇩🇪 +49" },
+  { code: "FR", dial: "+33", label: "🇫🇷 +33" },
+  { code: "IT", dial: "+39", label: "🇮🇹 +39" },
+  { code: "AU", dial: "+61", label: "🇦🇺 +61" },
+];
+
 function Contact({ copy, email, linkedin }) {
-  const [form, setForm] = useState({ name: "", email: "", project: copy.formProjectOptions[0], message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
   const [state, setState] = useState("idle");
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const valid = form.name.trim() && /\S+@\S+\.\S+/.test(form.email) && form.message.trim().length > 4;
@@ -448,12 +467,15 @@ function Contact({ copy, email, linkedin }) {
         body: JSON.stringify({
           name: form.name.trim(),
           email: form.email.trim(),
+          phone: form.phone.trim() ? `${form.phoneDial} ${form.phone.trim()}` : "",
           project: form.project,
           message: form.message.trim(),
         }),
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
       setState("sent");
+      setForm({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
+      setTimeout(() => setState("idle"), 4000);
     } catch {
       setState("idle");
       alert("Erro ao enviar. Tente novamente ou use o e-mail direto.");
@@ -479,6 +501,29 @@ function Contact({ copy, email, linkedin }) {
             <span className="field-lbl">{copy.formEmail}</span>
             <input className="field-in" type="email" value={form.email} onChange={set("email")} placeholder="" autoComplete="email" />
           </label>
+          <div className="field">
+            <span className="field-lbl">{copy.formPhone}</span>
+            <div className="phone-field">
+              <select
+                className="field-in phone-ddi"
+                value={form.phoneDial}
+                onChange={(e) => setForm((f) => ({ ...f, phoneDial: e.target.value }))}
+              >
+                {COUNTRY_CODES.map((c) => (
+                  <option key={c.code} value={c.dial}>{c.label}</option>
+                ))}
+              </select>
+              <input
+                className="field-in phone-num"
+                type="tel"
+                value={form.phone}
+                onChange={set("phone")}
+                placeholder="(11) 99999-9999"
+                autoComplete="tel-national"
+              />
+            </div>
+          </div>
+
           <label className="field">
             <span className="field-lbl">{copy.formProject}</span>
             <div className="seg">

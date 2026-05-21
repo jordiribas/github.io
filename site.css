@@ -7,15 +7,15 @@
   --accent-hover: oklch(76% 0.18 var(--accent-h));
   --accent-ink: oklch(18% 0.02 var(--accent-h));
 
-  --bg: #f4f4f0;
-  --bg-soft: #ecece6;
+  --bg: #ffffff;
+  --bg-soft: #f0f0ea;
   --bg-card: #fafaf6;
-  --fg: #0a0a0a;
-  --fg-2: #2a2a26;
-  --fg-3: #5a5a52;
-  --fg-4: #9a9a90;
-  --line: #d6d6cd;
-  --line-2: #b8b8ad;
+  --fg: #080808;
+  --fg-2: #1e1e1a;
+  --fg-3: #4a4a42;
+  --fg-4: #888880;
+  --line: #c8c8be;
+  --line-2: #a8a8a0;
 
   --maxw: 1200px;
   --pad-x: clamp(20px, 5vw, 56px);
@@ -608,6 +608,23 @@ main { display: block; }
 }
 .field-in:focus { border-color: var(--accent); background: var(--bg); }
 .field-ta { resize: vertical; min-height: 120px; line-height: 1.6; }
+
+.phone-field { display: flex; }
+.phone-ddi {
+  width: 120px;
+  flex-shrink: 0;
+  border-right: 0;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%235a5a52' d='M0 0h10L5 6z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+[data-theme="dark"] .phone-ddi {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%238a8a80' d='M0 0h10L5 6z'/></svg>");
+}
+.phone-num { flex: 1; }
 
 .seg {
   display: flex; flex-wrap: wrap; gap: 0;

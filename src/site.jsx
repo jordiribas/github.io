@@ -461,7 +461,7 @@ function About({ copy, location }) {
               <span className="bc-dots" aria-hidden><i /><i /><i /></span>
             </div>
             <div className="brand-card-img">
-              <img src="images/logo.jpg" alt="JRibas logo" />
+              <img src="images/perfil-jordi.png" alt="Jordi Ribas" />
               <span className="bc-scan" aria-hidden />
             </div>
             <figcaption className="brand-card-foot">

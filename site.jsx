@@ -8,7 +8,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "name": "Jordi Ribas",
   "handle": "jribas",
   "role": "Automação & Integrações",
-  "tagline": "Conecto sistemas, elimino trabalho manual e faço os dados chegarem onde precisam.",
+  "tagline": "Se tem processo manual, tem automação possível.",
   "location": "São José do Rio Preto, SP",
   "email": "jordi@jribas.com.br",
   "linkedin": "https://www.linkedin.com/in/jordiribas/",
@@ -38,7 +38,7 @@ const COPY = {
     aboutTitle: "Sobre.",
     aboutBody: [
       "Especializado em automação de processos e integração entre plataformas — n8n, APIs REST, webhooks e qualquer coisa que faça sistemas conversarem sem intervenção manual.",
-      "Atuo via firma própria (CNPJ 27.635.336/0001-87), em parceria recorrente com Wagner Fernandes, atendendo Eggs Soluções Imobiliárias, Abovyan Participações e Mangaba Urbanismo.",
+      "Atuo via firma própria, atendendo empresas do setor imobiliário e de loteamentos — do fluxo de leads ao contrato assinado.",
       "Acredito em decisões pragmáticas e prazos honestos. Fora do teclado: churrasco no quintal, estradas de SP/MG na FZ25 e jogos online quando sobra tempo."
     ],
     aboutFacts: [
@@ -51,22 +51,21 @@ const COPY = {
     workKicker: "02 — trajetória",
     workTitle: "Trajetória.",
     workItems: [
-      { year: "Atual", role: "Analista de Sistemas e Dados", org: "Eggs · Abovyan · Mangaba Urbanismo", body: "Sistemas internos em .NET + Angular, automações em n8n e pipelines de CRM no Notion. Integração de Clicksign (v3), Meta WhatsApp Cloud API e Chatwoot 4.11 para o fluxo de leads, contratos e onboarding de clientes." },
+      { year: "Atual", role: "Automação & Integrações", org: "Setor imobiliário · loteamentos", body: "Automações em n8n, pipelines de CRM no Notion e integrações com Clicksign (v3), Meta WhatsApp Cloud API e Chatwoot 4.11 para o fluxo de leads, contratos e onboarding de clientes." },
       { year: "Atual", role: "Infraestrutura e monitoramento", org: "Ambientes próprios + clientes", body: "Virtualização em Proxmox com LVM-Thin, monitoramento Zabbix 7.4 (templates Sophos) via SNMPv3 e operação de servidores Linux para os ambientes de produção." },
-      { year: "Recente", role: "Desenvolvedor independente", org: "JRibas — CNPJ 27.635.336/0001-87", body: "Projetos sob medida para o setor imobiliário e loteamentos: geração de contratos, validação de documentos, dashboards operacionais e integrações entre plataformas." },
-      { year: "Antes", role: "Desenvolvimento Web e Sistemas", org: "Projetos próprios e parcerias", body: "Primeiros sites, sistemas e integrações que viraram a base do que faço hoje — do front à infra, sempre próximo do problema do cliente." }
+      { year: "Recente", role: "Desenvolvedor independente", org: "JRibas", body: "Projetos sob medida para o setor imobiliário e loteamentos: automação de contratos, validação de documentos, dashboards operacionais e integrações entre plataformas." },
+      // { year: "Antes", role: "Desenvolvimento Web e Sistemas", org: "Projetos próprios e parcerias", body: "Primeiros sites, sistemas e integrações que viraram a base do que faço hoje — do front à infra, sempre próximo do problema do cliente." }
     ],
     workNote: "* Posso detalhar projetos específicos sob NDA — peça por e-mail.",
     skillsKicker: "03 — stack",
     skillsTitle: "Stack.",
     skillsLead: "Ferramentas que uso no dia a dia e entrego em produção.",
     skillsGroups: [
-      { label: "Backend", items: ["C#", ".NET Core", "REST APIs", "Entity Framework", "PostgreSQL", "SQL"] },
-      { label: "Frontend", items: ["TypeScript", "Angular", "RxJS", "HTML", "CSS", "JavaScript"] },
       { label: "Automação & Integrações", items: ["n8n", "Clicksign API v3", "WhatsApp Cloud API", "Chatwoot 4.11", "Notion API", "Webhooks"] },
+      { label: "Desenvolvimento", items: ["C#", ".NET Core", "TypeScript", "Angular", "PostgreSQL", "REST APIs"] },
       { label: "Infra & Monitoramento", items: ["Proxmox", "LVM-Thin", "Zabbix 7.4", "SNMPv3", "Sophos", "Linux", "Git"] },
       { label: "IA & ferramentas", items: ["Claude Code", "GitHub Copilot", "Gemini API", "Google AI Studio", "NotebookLM"] },
-      { label: "Em estudo", items: ["AWS CLF-C02"] }
+      // { label: "Em estudo", items: ["AWS CLF-C02"] }
     ],
     contactKicker: "04 — contato",
     contactTitle: "Vamos trabalhar juntos.",
@@ -75,7 +74,7 @@ const COPY = {
     formEmail: "Email",
     formPhone: "Telefone / WhatsApp",
     formProject: "Tipo de projeto",
-    formProjectOptions: ["Sistema interno", "Automação / integração", "Infra / monitoramento", "Consultoria técnica", "Outro"],
+    formProjectOptions: ["Automação / integração", "Sistema interno", "Infra / monitoramento", "Consultoria técnica", "Outro"],
     formMessage: "Sobre o projeto",
     formSend: "Enviar mensagem",
     formSending: "Enviando…",
@@ -96,7 +95,7 @@ const COPY = {
     aboutTitle: "About.",
     aboutBody: [
       "Specialized in process automation and platform integration — n8n, REST APIs, webhooks and anything that makes systems talk without manual intervention.",
-      "I work through my own company (CNPJ 27.635.336/0001-87), in long-running partnership with Wagner Fernandes, serving Eggs Soluções Imobiliárias, Abovyan Participações and Mangaba Urbanismo.",
+      "I work through my own company, serving real-estate and land-development businesses — from lead flow to signed contract.",
       "I believe in pragmatic decisions and honest deadlines. Off-keyboard: backyard BBQ, weekend rides on the FZ25 across SP and MG, and online games when time allows."
     ],
     aboutFacts: [
@@ -109,22 +108,21 @@ const COPY = {
     workKicker: "02 — work",
     workTitle: "Work.",
     workItems: [
-      { year: "Now", role: "Systems & Data Analyst", org: "Eggs · Abovyan · Mangaba Urbanismo", body: "Internal systems on .NET + Angular, automations on n8n and CRM pipelines on Notion. Clicksign (v3), Meta WhatsApp Cloud API and Chatwoot 4.11 integrations covering leads, contracts and client onboarding." },
+      { year: "Now", role: "Automation & Integrations", org: "Real estate · land development", body: "Automations on n8n, CRM pipelines on Notion and integrations with Clicksign (v3), Meta WhatsApp Cloud API and Chatwoot 4.11 covering leads, contracts and client onboarding." },
       { year: "Now", role: "Infrastructure & monitoring", org: "Own and client environments", body: "Virtualization on Proxmox with LVM-Thin, Zabbix 7.4 monitoring (Sophos templates) over SNMPv3, and Linux server operation for production environments." },
-      { year: "Recent", role: "Independent developer", org: "JRibas — CNPJ 27.635.336/0001-87", body: "Bespoke software for real-estate and land development: contract generation, document validation, operational dashboards and cross-platform integrations." },
-      { year: "Before", role: "Web & Systems development", org: "Own projects and partnerships", body: "Early sites, systems and integrations that became the foundation of what I do today — front-end to infrastructure, always close to the client's problem." }
+      { year: "Recent", role: "Independent developer", org: "JRibas", body: "Bespoke automation for real-estate and land development: contract automation, document validation, operational dashboards and cross-platform integrations." },
+      // { year: "Before", role: "Web & Systems development", org: "Own projects and partnerships", body: "Early sites, systems and integrations that became the foundation of what I do today — front-end to infrastructure, always close to the client's problem." }
     ],
     workNote: "* I can discuss specific projects under NDA — just ask by email.",
     skillsKicker: "03 — stack",
     skillsTitle: "Stack.",
     skillsLead: "Tools I use every day and ship to production.",
     skillsGroups: [
-      { label: "Backend", items: ["C#", ".NET Core", "REST APIs", "Entity Framework", "PostgreSQL", "SQL"] },
-      { label: "Frontend", items: ["TypeScript", "Angular", "RxJS", "HTML", "CSS", "JavaScript"] },
       { label: "Automation & integrations", items: ["n8n", "Clicksign API v3", "WhatsApp Cloud API", "Chatwoot 4.11", "Notion API", "Webhooks"] },
+      { label: "Development", items: ["C#", ".NET Core", "TypeScript", "Angular", "PostgreSQL", "REST APIs"] },
       { label: "Infra & monitoring", items: ["Proxmox", "LVM-Thin", "Zabbix 7.4", "SNMPv3", "Sophos", "Linux", "Git"] },
       { label: "AI & tooling", items: ["Claude Code", "GitHub Copilot", "Gemini API", "Google AI Studio", "NotebookLM"] },
-      { label: "Studying", items: ["AWS CLF-C02"] }
+      // { label: "Studying", items: ["AWS CLF-C02"] }
     ],
     contactKicker: "04 — contact",
     contactTitle: "Let's work together.",
@@ -133,7 +131,7 @@ const COPY = {
     formEmail: "Email",
     formPhone: "Phone / WhatsApp",
     formProject: "Project type",
-    formProjectOptions: ["Internal system", "Automation / integration", "Infra / monitoring", "Technical consulting", "Other"],
+    formProjectOptions: ["Automation / integration", "Internal system", "Infra / monitoring", "Technical consulting", "Other"],
     formMessage: "About the project",
     formSend: "Send message",
     formSending: "Sending…",

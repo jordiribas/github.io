@@ -29,7 +29,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "tagline": "Se tem processo manual, tem automação possível.",
   "location": "São José do Rio Preto, SP",
   "email": "jordi@jribas.com.br",
-  "linkedin": "https://www.linkedin.com/in/jordiribas/",
+  "linkedin": "https://www.linkedin.com/in/jordi-ribas/",
   "github": "",
   "available": true,
   "showClients": false,

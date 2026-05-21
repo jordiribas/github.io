@@ -7,7 +7,7 @@
   --accent-hover: oklch(76% 0.18 var(--accent-h));
   --accent-ink: oklch(18% 0.02 var(--accent-h));
 
-  --bg: #ffffff;
+  --bg: #f2f1ed;
   --bg-soft: #f0f0ea;
   --bg-card: #fafaf6;
   --fg: #080808;

@@ -1,5 +1,7 @@
-/* global React, ReactDOM, TweaksPanel, TweakSection, TweakSlider, TweakToggle, TweakRadio, TweakSelect, TweakText, TweakColor, useTweaks */
-const { useState, useEffect, useRef, useMemo, useCallback } = React;
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import ReactDOM from 'react-dom/client';
+import { TweaksPanel, TweakSection, TweakSlider, TweakToggle, TweakRadio, TweakText, useTweaks } from './tweaks-panel.jsx';
+import './site.css';
 
 // ════════════════════════════════════════════════════════════════════════════
 //                          ✏️  EDIÇÃO RÁPIDA  ✏️
@@ -676,7 +678,7 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
   const [state, setState] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [touched, setTouched] = useState({ name: false, email: false, message: false });
+  const [touched, setTouched] = useState({ name: false, email: false, phone: false, message: false });
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const touch = (k) => () => setTouched((t) => ({ ...t, [k]: true }));
@@ -684,21 +686,25 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
   const MSG_MIN = 5;
   const isEn = lang === "en";
   const errors = {
-    name:    !form.name.trim()                          ? (isEn ? "Required" : "Obrigatório") : "",
-    email:   !/\S+@\S+\.\S+/.test(form.email)          ? (isEn ? "Invalid email" : "Email inválido") : "",
+    name:    !form.name.trim()
+               ? (isEn ? "Required" : "Obrigatório") : "",
+    email:   !/\S+@\S+\.\S+/.test(form.email)
+               ? (isEn ? "Invalid email" : "Email inválido") : "",
+    phone:   form.phone.trim() && form.phone.replace(/\D/g, "").length < 6
+               ? (isEn ? "Invalid phone number" : "Número inválido") : "",
     message: form.message.trim().length < MSG_MIN
                ? (isEn
                    ? `Minimum ${MSG_MIN} characters (${form.message.trim().length}/${MSG_MIN})`
                    : `Mínimo ${MSG_MIN} caracteres (${form.message.trim().length}/${MSG_MIN})`)
                : "",
   };
-  const valid = !errors.name && !errors.email && !errors.message;
+  const valid = !errors.name && !errors.email && !errors.phone && !errors.message;
 
   const submit = async (e) => {
     e.preventDefault();
     if (state === "sending") return;
     if (!valid) {
-      setTouched({ name: true, email: true, message: true });
+      setTouched({ name: true, email: true, phone: true, message: true });
       return;
     }
     setState("sending");
@@ -725,7 +731,7 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
         if (!res.ok) throw new Error("HTTP " + res.status);
         setState("sent");
         setForm({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
-        setTouched({ name: false, email: false, message: false });
+        setTouched({ name: false, email: false, phone: false, message: false });
         setTimeout(() => setState("idle"), 4000);
       } else {
         const subject = encodeURIComponent(`[${form.project}] ${form.name}`);
@@ -790,14 +796,16 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
                 ))}
               </select>
               <input
-                className="field-in phone-num"
+                className={"field-in phone-num" + (touched.phone && errors.phone ? " is-error" : "")}
                 type="tel"
                 value={form.phone}
                 onChange={set("phone")}
+                onBlur={touch("phone")}
                 placeholder="(11) 99999-9999"
                 autoComplete="tel-national"
               />
             </div>
+            {touched.phone && errors.phone ? <span className="field-err">{errors.phone}</span> : null}
           </div>
           <label className="field">
             <span className="field-lbl">{copy.formProject}</span>

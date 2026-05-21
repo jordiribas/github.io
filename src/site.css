@@ -449,7 +449,7 @@ main { display: block; }
 .bc-dots i:first-child { background: var(--accent); border-color: var(--accent); }
 .brand-card-img {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   background: #000;
   overflow: hidden;
 }

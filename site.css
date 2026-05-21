@@ -89,7 +89,7 @@ a { color: inherit; text-decoration: none; }
   background-repeat: no-repeat;
   mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent);
 }
-[data-gridlines="on"] .grid-overlay { opacity: 0.55; }
+[data-gridlines="on"] .grid-overlay { opacity: 0.28; }
 [data-theme="dark"] .grid-overlay { opacity: 0; }
 [data-theme="dark"][data-gridlines="on"] .grid-overlay { opacity: 0.45; }
 

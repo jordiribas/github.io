@@ -676,12 +676,31 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
   const [state, setState] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [touched, setTouched] = useState({ name: false, email: false, message: false });
+
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const valid = form.name.trim() && /\S+@\S+\.\S+/.test(form.email) && form.message.trim().length > 4;
+  const touch = (k) => () => setTouched((t) => ({ ...t, [k]: true }));
+
+  const MSG_MIN = 5;
+  const isEn = lang === "en";
+  const errors = {
+    name:    !form.name.trim()                          ? (isEn ? "Required" : "Obrigatório") : "",
+    email:   !/\S+@\S+\.\S+/.test(form.email)          ? (isEn ? "Invalid email" : "Email inválido") : "",
+    message: form.message.trim().length < MSG_MIN
+               ? (isEn
+                   ? `Minimum ${MSG_MIN} characters (${form.message.trim().length}/${MSG_MIN})`
+                   : `Mínimo ${MSG_MIN} caracteres (${form.message.trim().length}/${MSG_MIN})`)
+               : "",
+  };
+  const valid = !errors.name && !errors.email && !errors.message;
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!valid || state === "sending") return;
+    if (state === "sending") return;
+    if (!valid) {
+      setTouched({ name: true, email: true, message: true });
+      return;
+    }
     setState("sending");
     setErrorMsg("");
     try {
@@ -706,6 +725,7 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
         if (!res.ok) throw new Error("HTTP " + res.status);
         setState("sent");
         setForm({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
+        setTouched({ name: false, email: false, message: false });
         setTimeout(() => setState("idle"), 4000);
       } else {
         const subject = encodeURIComponent(`[${form.project}] ${form.name}`);
@@ -734,11 +754,28 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
         <form className="form" onSubmit={submit} data-reveal>
           <label className="field">
             <span className="field-lbl">{copy.formName}</span>
-            <input className="field-in" value={form.name} onChange={set("name")} placeholder="" autoComplete="name" />
+            <input
+              className={"field-in" + (touched.name && errors.name ? " is-error" : "")}
+              value={form.name}
+              onChange={set("name")}
+              onBlur={touch("name")}
+              placeholder=""
+              autoComplete="name"
+            />
+            {touched.name && errors.name ? <span className="field-err">{errors.name}</span> : null}
           </label>
           <label className="field">
             <span className="field-lbl">{copy.formEmail}</span>
-            <input className="field-in" type="email" value={form.email} onChange={set("email")} placeholder="" autoComplete="email" />
+            <input
+              className={"field-in" + (touched.email && errors.email ? " is-error" : "")}
+              type="email"
+              value={form.email}
+              onChange={set("email")}
+              onBlur={touch("email")}
+              placeholder=""
+              autoComplete="email"
+            />
+            {touched.email && errors.email ? <span className="field-err">{errors.email}</span> : null}
           </label>
           <div className="field">
             <span className="field-lbl">{copy.formPhone}</span>
@@ -777,10 +814,22 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
               ))}
             </div>
           </label>
-          <label className="field">
-            <span className="field-lbl">{copy.formMessage}</span>
-            <textarea className="field-in field-ta" rows={5} value={form.message} onChange={set("message")} />
-          </label>
+          <div className="field">
+            <div className="field-lbl-row">
+              <span className="field-lbl">{copy.formMessage}</span>
+              <span className={"field-count" + (form.message.trim().length >= MSG_MIN ? " is-ok" : "")}>
+                {form.message.trim().length}/{MSG_MIN}
+              </span>
+            </div>
+            <textarea
+              className={"field-in field-ta" + (touched.message && errors.message ? " is-error" : "")}
+              rows={5}
+              value={form.message}
+              onChange={set("message")}
+              onBlur={touch("message")}
+            />
+            {touched.message && errors.message ? <span className="field-err">{errors.message}</span> : null}
+          </div>
 
           <div className="form-actions">
             <button type="submit" className={"btn btn-primary " + (!valid ? "btn-dis" : "")} disabled={!valid || state === "sending"}>

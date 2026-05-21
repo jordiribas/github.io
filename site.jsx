@@ -1,9 +1,25 @@
 /* global React, ReactDOM, TweaksPanel, TweakSection, TweakSlider, TweakToggle, TweakRadio, TweakSelect, TweakText, TweakColor, useTweaks */
 const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
-// ────────────────────────────────────────────────────────────────
-// DEFAULTS — editable persistently via Tweaks
-// ────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//                          ✏️  EDIÇÃO RÁPIDA  ✏️
+// ────────────────────────────────────────────────────────────────────────────
+// Os valores abaixo são os que você muda no dia a dia direto no GitHub.
+//
+// ── Status & conteúdo (flipe quando estiver pronto) ──
+//   "available"    → true (aceitando projetos)  |  false (em projeto)
+//   "showClients"  → false enquanto não tiver autorização dos clientes.
+//   "showCases"    → false enquanto os cases estão em rascunho.
+//
+// ── Integrações ──
+//   "formWebhook"  → URL do webhook n8n. Se vazio, form abre mailto.
+//   "cvUrl"        → URL pública do CV em PDF. Se vazio, botão some.
+//
+// ── Aparência ──
+//   "themeMode"    → "auto" | "light" | "dark"
+//   "accentHue"    → cor de destaque em graus OKLCH (0–360). 235 = azul logo.
+//   "language"     → "pt" | "en"
+// ════════════════════════════════════════════════════════════════════════════
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "name": "Jordi Ribas",
   "handle": "jribas",
@@ -13,6 +29,11 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "email": "jordi@jribas.com.br",
   "linkedin": "https://www.linkedin.com/in/jordiribas/",
   "github": "",
+  "available": true,
+  "showClients": false,
+  "showCases": false,
+  "formWebhook": "https://webhook-eggs.ackhub.app/webhook/617c8eae-6e39-464f-a492-70affae971b4-jribas",
+  "cvUrl": "",
   "themeMode": "auto",
   "accentHue": 235,
   "gridLines": true,
@@ -27,7 +48,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 // ────────────────────────────────────────────────────────────────
 const COPY = {
   pt: {
-    nav: { about: "sobre", work: "trajetória", skills: "stack", contact: "contato" },
+    nav: { about: "sobre", work: "trajetória", cases: "cases", skills: "stack", contact: "contato" },
     statusAvailable: "Aberto a novos projetos",
     statusBusy: "Em projeto · respondo",
     heroIntroLine: "// arquivo: ~/sobre.md",
@@ -57,6 +78,43 @@ const COPY = {
       // { year: "Antes", role: "Desenvolvimento Web e Sistemas", org: "Projetos próprios e parcerias", body: "Primeiros sites, sistemas e integrações que viraram a base do que faço hoje — do front à infra, sempre próximo do problema do cliente." }
     ],
     workNote: "* Posso detalhar projetos específicos sob NDA — peça por e-mail.",
+    clientsKicker: "clientes",
+    clientsLead: "Parceiros e empresas com quem trabalho — logos com autorização.",
+    clients: [
+      { name: "Eggs", subtitle: "Soluções Imobiliárias", logo: "" },
+      { name: "Abovyan", subtitle: "Participações", logo: "" },
+      { name: "Mangaba", subtitle: "Urbanismo", logo: "" }
+    ],
+    casesKicker: "cases",
+    casesTitle: "Cases.",
+    casesLead: "Projetos selecionados. Em breve com mais detalhes — alguns sob NDA.",
+    cases: [
+      {
+        title: "[Preencher: título do case]",
+        client: "[Cliente]",
+        year: "[2025]",
+        problem: "[Qual era o problema antes do projeto?]",
+        stack: ["[n8n]", "[Clicksign]", "[WhatsApp API]"],
+        result: "[Qual foi o resultado mensurável? Ex: redução de X% no tempo, Y contratos/mês, Z erros eliminados.]"
+      },
+      {
+        title: "[Preencher: título do case]",
+        client: "[Cliente]",
+        year: "[2025]",
+        problem: "[Qual era o problema antes do projeto?]",
+        stack: ["[Stack]", "[Stack]"],
+        result: "[Resultado]"
+      },
+      {
+        title: "[Preencher: título do case]",
+        client: "[Cliente]",
+        year: "[2024]",
+        problem: "[Qual era o problema antes do projeto?]",
+        stack: ["[Stack]", "[Stack]"],
+        result: "[Resultado]"
+      }
+    ],
+    casesEmptyLabel: "// rascunho — preencher",
     skillsKicker: "03 — stack",
     skillsTitle: "Stack.",
     skillsLead: "Ferramentas que uso no dia a dia e entrego em produção.",
@@ -84,7 +142,7 @@ const COPY = {
     rights: "Todos os direitos reservados."
   },
   en: {
-    nav: { about: "about", work: "work", skills: "stack", contact: "contact" },
+    nav: { about: "about", work: "work", cases: "cases", skills: "stack", contact: "contact" },
     statusAvailable: "Open to new projects",
     statusBusy: "On a project · still reply",
     heroIntroLine: "// file: ~/about.md",
@@ -114,6 +172,43 @@ const COPY = {
       // { year: "Before", role: "Web & Systems development", org: "Own projects and partnerships", body: "Early sites, systems and integrations that became the foundation of what I do today — front-end to infrastructure, always close to the client's problem." }
     ],
     workNote: "* I can discuss specific projects under NDA — just ask by email.",
+    clientsKicker: "clients",
+    clientsLead: "Partners and companies I work with — logos shown with authorization.",
+    clients: [
+      { name: "Eggs", subtitle: "Real Estate", logo: "" },
+      { name: "Abovyan", subtitle: "Holdings", logo: "" },
+      { name: "Mangaba", subtitle: "Urbanism", logo: "" }
+    ],
+    casesKicker: "cases",
+    casesTitle: "Cases.",
+    casesLead: "Selected projects. More detail coming soon — some under NDA.",
+    cases: [
+      {
+        title: "[Fill in: case title]",
+        client: "[Client]",
+        year: "[2025]",
+        problem: "[What was the problem before the project?]",
+        stack: ["[n8n]", "[Clicksign]", "[WhatsApp API]"],
+        result: "[What was the measurable result? Ex: X% time reduction, Y contracts/month, Z errors eliminated.]"
+      },
+      {
+        title: "[Fill in: case title]",
+        client: "[Client]",
+        year: "[2025]",
+        problem: "[What was the problem before the project?]",
+        stack: ["[Stack]", "[Stack]"],
+        result: "[Result]"
+      },
+      {
+        title: "[Fill in: case title]",
+        client: "[Client]",
+        year: "[2024]",
+        problem: "[What was the problem before the project?]",
+        stack: ["[Stack]", "[Stack]"],
+        result: "[Result]"
+      }
+    ],
+    casesEmptyLabel: "// draft — to fill",
     skillsKicker: "03 — stack",
     skillsTitle: "Stack.",
     skillsLead: "Tools I use every day and ship to production.",
@@ -233,28 +328,35 @@ function StatusDot({ available, label }) {
   );
 }
 
-function Nav({ copy, dark, onToggleTheme, themeMode, lang, onLangSwap, onJump }) {
+function Nav({ copy, dark, onToggleTheme, themeMode, lang, onLangSwap, onJump, showCases }) {
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  useEffect(() => {
+    document.documentElement.style.overflow = open ? "hidden" : "";
+    return () => { document.documentElement.style.overflow = ""; };
+  }, [open]);
+  const jump = (id) => { setOpen(false); onJump(id); };
   return (
     <header className={"nav " + (scrolled ? "nav-scrolled" : "")}>
       <div className="nav-inner">
-        <a className="brand" href="#top" onClick={(e) => { e.preventDefault(); onJump("top"); }}>
+        <a className="brand" href="#top" onClick={(e) => { e.preventDefault(); jump("top"); }}>
           <span className="brand-bracket">[</span>
           <span className="brand-name">jribas</span>
           <span className="brand-bracket">]</span>
           <span className="brand-cursor" />
         </a>
         <nav className="nav-links">
-          <a href="#about"   onClick={(e) => { e.preventDefault(); onJump("about"); }}>{copy.nav.about}</a>
-          <a href="#work"    onClick={(e) => { e.preventDefault(); onJump("work"); }}>{copy.nav.work}</a>
-          <a href="#skills"  onClick={(e) => { e.preventDefault(); onJump("skills"); }}>{copy.nav.skills}</a>
-          <a href="#contact" onClick={(e) => { e.preventDefault(); onJump("contact"); }}>{copy.nav.contact}</a>
+          <a href="#about"   onClick={(e) => { e.preventDefault(); jump("about"); }}>{copy.nav.about}</a>
+          <a href="#work"    onClick={(e) => { e.preventDefault(); jump("work"); }}>{copy.nav.work}</a>
+          {showCases ? <a href="#cases" onClick={(e) => { e.preventDefault(); jump("cases"); }}>{copy.nav.cases}</a> : null}
+          <a href="#skills"  onClick={(e) => { e.preventDefault(); jump("skills"); }}>{copy.nav.skills}</a>
+          <a href="#contact" onClick={(e) => { e.preventDefault(); jump("contact"); }}>{copy.nav.contact}</a>
         </nav>
         <div className="nav-tools">
           <button className="tool" onClick={onLangSwap} title="Language">
@@ -264,7 +366,25 @@ function Nav({ copy, dark, onToggleTheme, themeMode, lang, onLangSwap, onJump })
             {themeMode === "auto" ? "AUTO" : themeMode === "dark" ? "DARK" : "LIGHT"}
             <span className={"theme-glyph " + (dark ? "theme-glyph-dark" : "theme-glyph-light")} />
           </button>
+          <button
+            className={"tool tool-menu " + (open ? "is-open" : "")}
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Menu"
+            aria-expanded={open}
+          >
+            <span className="burger" aria-hidden><i /><i /><i /></span>
+          </button>
         </div>
+      </div>
+      <div className={"nav-sheet " + (open ? "is-open" : "")} onClick={() => setOpen(false)}>
+        <nav className="nav-sheet-inner" onClick={(e) => e.stopPropagation()}>
+          <button className="sheet-x" onClick={() => setOpen(false)} aria-label="Close">×</button>
+          <a href="#about"   onClick={(e) => { e.preventDefault(); jump("about"); }}><span className="sk">01</span>{copy.nav.about}</a>
+          <a href="#work"    onClick={(e) => { e.preventDefault(); jump("work"); }}><span className="sk">02</span>{copy.nav.work}</a>
+          {showCases ? <a href="#cases" onClick={(e) => { e.preventDefault(); jump("cases"); }}><span className="sk">03</span>{copy.nav.cases}</a> : null}
+          <a href="#skills"  onClick={(e) => { e.preventDefault(); jump("skills"); }}><span className="sk">{showCases ? "04" : "03"}</span>{copy.nav.skills}</a>
+          <a href="#contact" onClick={(e) => { e.preventDefault(); jump("contact"); }}><span className="sk">{showCases ? "05" : "04"}</span>{copy.nav.contact}</a>
+        </nav>
       </div>
     </header>
   );
@@ -425,29 +545,137 @@ function Skills({ copy }) {
   );
 }
 
-const WEBHOOK_URL = "https://webhook-eggs.ackhub.app/webhook/617c8eae-6e39-464f-a492-70affae971b4-jribas";
+function Clients({ copy, show }) {
+  const list = copy.clients || [];
+  if (!show || !list.length) return null;
+  return (
+    <section id="clients" className="clients" aria-label={copy.clientsKicker}>
+      <div className="clients-inner">
+        <div className="clients-head">
+          <span className="clients-kicker">// {copy.clientsKicker}</span>
+          <span className="clients-rule" aria-hidden />
+        </div>
+        <ul className="clients-grid">
+          {list.map((c, i) => (
+            <li className="client" key={i} data-reveal style={{ transitionDelay: `${i * 80}ms` }}>
+              {c.logo ? (
+                <img className="client-logo" src={c.logo} alt={c.name} />
+              ) : (
+                <span className="client-mono" aria-hidden>
+                  {c.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
+                </span>
+              )}
+              <div className="client-meta">
+                <div className="client-name">{c.name}</div>
+                {c.subtitle ? <div className="client-sub">{c.subtitle}</div> : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p className="clients-note">{copy.clientsLead}</p>
+      </div>
+    </section>
+  );
+}
+
+function Cases({ copy, show }) {
+  const list = copy.cases || [];
+  if (!show || !list.length) return null;
+  return (
+    <section id="cases" className="sec sec-cases">
+      <SectionHeader kicker={copy.casesKicker} title={copy.casesTitle} />
+      <p className="cases-lead" data-reveal>{copy.casesLead}</p>
+
+      <ol className="cases-grid">
+        {list.map((c, i) => {
+          const isDraft = (c.title || "").includes("[");
+          return (
+            <li
+              className={"case-card " + (isDraft ? "case-draft" : "")}
+              key={i}
+              data-reveal
+              style={{ transitionDelay: `${i * 90}ms` }}
+            >
+              <div className="case-head">
+                <span className="case-num">{String(i + 1).padStart(2, "0")}</span>
+                <span className="case-year">{c.year}</span>
+                {isDraft ? <span className="case-status">{copy.casesEmptyLabel}</span> : null}
+              </div>
+              <h3 className="case-title">{c.title}</h3>
+              <div className="case-client">@ {c.client}</div>
+              <dl className="case-rows">
+                <div className="case-row">
+                  <dt>{copy.language === "en" ? "Problem" : "Problema"}</dt>
+                  <dd>{c.problem}</dd>
+                </div>
+                <div className="case-row">
+                  <dt>Stack</dt>
+                  <dd>
+                    <ul className="case-stack">
+                      {c.stack.map((s, j) => <li key={j}>{s}</li>)}
+                    </ul>
+                  </dd>
+                </div>
+                <div className="case-row">
+                  <dt>{copy.language === "en" ? "Result" : "Resultado"}</dt>
+                  <dd className="case-result">{c.result}</dd>
+                </div>
+              </dl>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+function CopyEmail({ email }) {
+  const [copied, setCopied] = useState(false);
+  const doCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch (e) {
+      window.location.href = `mailto:${email}`;
+    }
+  };
+  return (
+    <button type="button" className="copy-btn" onClick={doCopy} aria-label="Copy email">
+      <span className="copy-val">{email}</span>
+      <span className={"copy-state " + (copied ? "is-copied" : "")}>
+        {copied ? "copiado ✓" : "copy"}
+      </span>
+    </button>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────
+// WEBHOOK CONFIG
+// ────────────────────────────────────────────────────────────────
 const WEBHOOK_TOKEN = "JRBQ8TF5LAMXCMJHHFQD6AIH28VPSK3Q9AK0O4U1Z0XHX6VO9Z2AQYBZEP42BLWL";
 
 const COUNTRY_CODES = [
-  { code: "BR", dial: "+55", label: "🇧🇷 +55" },
+  { code: "BR", dial: "+55",  label: "🇧🇷 +55" },
   { code: "PT", dial: "+351", label: "🇵🇹 +351" },
-  { code: "US", dial: "+1",  label: "🇺🇸 +1" },
-  { code: "AR", dial: "+54", label: "🇦🇷 +54" },
+  { code: "US", dial: "+1",   label: "🇺🇸 +1" },
+  { code: "AR", dial: "+54",  label: "🇦🇷 +54" },
   { code: "UY", dial: "+598", label: "🇺🇾 +598" },
-  { code: "CL", dial: "+56", label: "🇨🇱 +56" },
-  { code: "CO", dial: "+57", label: "🇨🇴 +57" },
-  { code: "MX", dial: "+52", label: "🇲🇽 +52" },
-  { code: "ES", dial: "+34", label: "🇪🇸 +34" },
-  { code: "GB", dial: "+44", label: "🇬🇧 +44" },
-  { code: "DE", dial: "+49", label: "🇩🇪 +49" },
-  { code: "FR", dial: "+33", label: "🇫🇷 +33" },
-  { code: "IT", dial: "+39", label: "🇮🇹 +39" },
-  { code: "AU", dial: "+61", label: "🇦🇺 +61" },
+  { code: "CL", dial: "+56",  label: "🇨🇱 +56" },
+  { code: "CO", dial: "+57",  label: "🇨🇴 +57" },
+  { code: "MX", dial: "+52",  label: "🇲🇽 +52" },
+  { code: "ES", dial: "+34",  label: "🇪🇸 +34" },
+  { code: "GB", dial: "+44",  label: "🇬🇧 +44" },
+  { code: "DE", dial: "+49",  label: "🇩🇪 +49" },
+  { code: "FR", dial: "+33",  label: "🇫🇷 +33" },
+  { code: "IT", dial: "+39",  label: "🇮🇹 +39" },
+  { code: "AU", dial: "+61",  label: "🇦🇺 +61" },
 ];
 
-function Contact({ copy, email, linkedin }) {
+function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
   const [state, setState] = useState("idle");
+  const [errorMsg, setErrorMsg] = useState("");
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const valid = form.name.trim() && /\S+@\S+\.\S+/.test(form.email) && form.message.trim().length > 4;
 
@@ -455,28 +683,41 @@ function Contact({ copy, email, linkedin }) {
     e.preventDefault();
     if (!valid || state === "sending") return;
     setState("sending");
+    setErrorMsg("");
     try {
-      const res = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Webhook-Token": WEBHOOK_TOKEN,
-        },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim() ? `${form.phoneDial} ${form.phone.trim()}` : "",
-          project: form.project,
-          message: form.message.trim(),
-        }),
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      setState("sent");
-      setForm({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
-      setTimeout(() => setState("idle"), 4000);
-    } catch {
-      setState("idle");
-      alert("Erro ao enviar. Tente novamente ou use o e-mail direto.");
+      if (webhook) {
+        const res = await fetch(webhook, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Webhook-Token": WEBHOOK_TOKEN,
+          },
+          body: JSON.stringify({
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim() ? `${form.phoneDial} ${form.phone.trim()}` : "",
+            project: form.project,
+            message: form.message.trim(),
+            source: "jribas.com.br",
+            lang,
+            ts: new Date().toISOString()
+          })
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        setState("sent");
+        setForm({ name: "", email: "", phone: "", phoneDial: "+55", project: copy.formProjectOptions[0], message: "" });
+        setTimeout(() => setState("idle"), 4000);
+      } else {
+        const subject = encodeURIComponent(`[${form.project}] ${form.name}`);
+        const body = encodeURIComponent(
+          `${form.message}\n\n—\n${form.name}\n${form.email}${form.phone.trim() ? `\n${form.phoneDial} ${form.phone.trim()}` : ""}`
+        );
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        setState("sent");
+      }
+    } catch (err) {
+      setState("error");
+      setErrorMsg(String(err.message || err));
     }
   };
 
@@ -521,7 +762,6 @@ function Contact({ copy, email, linkedin }) {
               />
             </div>
           </div>
-
           <label className="field">
             <span className="field-lbl">{copy.formProject}</span>
             <div className="seg">
@@ -542,23 +782,32 @@ function Contact({ copy, email, linkedin }) {
             <textarea className="field-in field-ta" rows={5} value={form.message} onChange={set("message")} />
           </label>
 
-          <button type="submit" className={"btn btn-primary " + (!valid ? "btn-dis" : "")} disabled={!valid || state !== "idle"}>
-            <span>
-              {state === "idle" && copy.formSend}
-              {state === "sending" && copy.formSending}
-              {state === "sent" && copy.formSent}
-            </span>
-            <span className="btn-arrow">{state === "sent" ? "✓" : "→"}</span>
-          </button>
+          <div className="form-actions">
+            <button type="submit" className={"btn btn-primary " + (!valid ? "btn-dis" : "")} disabled={!valid || state === "sending"}>
+              <span>
+                {state === "idle"    && copy.formSend}
+                {state === "sending" && copy.formSending}
+                {state === "sent"    && copy.formSent}
+                {state === "error"   && (lang === "en" ? "Try again" : "Tente novamente")}
+              </span>
+              <span className="btn-arrow">{state === "sent" ? "✓" : state === "error" ? "!" : "→"}</span>
+            </button>
+            {cvUrl ? (
+              <a className="btn btn-ghost" href={cvUrl} target="_blank" rel="noreferrer">
+                <span>{lang === "en" ? "Download CV" : "Baixar CV"}</span>
+                <span className="btn-arrow">↓</span>
+              </a>
+            ) : null}
+          </div>
+          {state === "error" ? <div className="form-err">{errorMsg}</div> : null}
         </form>
 
         <aside className="contact-aside" data-reveal>
           <div className="aside-line"><span className="aside-k">{copy.orDirect}</span></div>
-          <a className="aside-link" href={`mailto:${email}`}>
+          <div className="aside-link aside-link-static">
             <span className="aside-tag">email</span>
-            <span className="aside-val">{email}</span>
-            <span className="aside-arrow">↗</span>
-          </a>
+            <CopyEmail email={email} />
+          </div>
           {linkedin ? (
             <a className="aside-link" href={linkedin} target="_blank" rel="noreferrer">
               <span className="aside-tag">linkedin</span>
@@ -626,40 +875,55 @@ function App() {
 
   useReveal(t.animationLevel === "off");
 
-  const available = true;
+  const copyWithLang = useMemo(() => ({ ...copy, language: lang }), [copy, lang]);
 
   return (
     <div className="page">
       <div className="grid-overlay" aria-hidden />
       <Nav
-        copy={copy}
+        copy={copyWithLang}
         dark={dark}
         themeMode={t.themeMode}
         onToggleTheme={toggleTheme}
         lang={lang}
         onLangSwap={() => setTweak("language", lang === "pt" ? "en" : "pt")}
         onJump={onJump}
+        showCases={!!t.showCases}
       />
 
       <main>
         <Hero
-          copy={copy}
+          copy={copyWithLang}
           name={t.name}
           role={t.role}
           tagline={t.tagline}
           email={t.email}
-          available={available}
+          available={!!t.available}
           time={time}
         />
-        <About copy={copy} location={t.location} />
-        <Work copy={copy} />
-        <Skills copy={copy} />
-        <Contact copy={copy} email={t.email} linkedin={t.linkedin} />
+        <Clients copy={copyWithLang} show={!!t.showClients} />
+        <About copy={copyWithLang} location={t.location} />
+        <Work copy={copyWithLang} />
+        <Cases copy={copyWithLang} show={!!t.showCases} />
+        <Skills copy={copyWithLang} />
+        <Contact
+          copy={copyWithLang}
+          email={t.email}
+          linkedin={t.linkedin}
+          webhook={t.formWebhook}
+          cvUrl={t.cvUrl}
+          lang={lang}
+        />
       </main>
 
-      <Footer copy={copy} name={t.name} time={time} />
+      <Footer copy={copyWithLang} name={t.name} time={time} />
 
       <TweaksPanel title="Tweaks">
+        <TweakSection label="Status & visibilidade" />
+        <TweakToggle label="Aceitando projetos"  value={!!t.available}   onChange={(v) => setTweak("available", v)} />
+        <TweakToggle label="Mostrar clientes"    value={!!t.showClients} onChange={(v) => setTweak("showClients", v)} />
+        <TweakToggle label="Mostrar cases"       value={!!t.showCases}   onChange={(v) => setTweak("showCases", v)} />
+
         <TweakSection label="Identity" />
         <TweakText  label="Name"     value={t.name}     onChange={(v) => setTweak("name", v)} />
         <TweakText  label="Role"     value={t.role}     onChange={(v) => setTweak("role", v)} />
@@ -667,6 +931,10 @@ function App() {
         <TweakText  label="Location" value={t.location} onChange={(v) => setTweak("location", v)} />
         <TweakText  label="Email"    value={t.email}    onChange={(v) => setTweak("email", v)} />
         <TweakText  label="LinkedIn" value={t.linkedin} onChange={(v) => setTweak("linkedin", v)} />
+
+        <TweakSection label="Form & CV" />
+        <TweakText  label="Webhook n8n" value={t.formWebhook} onChange={(v) => setTweak("formWebhook", v)} />
+        <TweakText  label="CV URL (PDF)" value={t.cvUrl}      onChange={(v) => setTweak("cvUrl", v)} />
 
         <TweakSection label="Theme" />
         <TweakRadio label="Mode"       value={t.themeMode} options={["auto", "light", "dark"]} onChange={(v) => setTweak("themeMode", v)} />
@@ -679,7 +947,7 @@ function App() {
 
         <TweakSection label="Motion & language" />
         <TweakRadio label="Animation" value={t.animationLevel} options={["off", "moderate", "lively"]} onChange={(v) => setTweak("animationLevel", v)} />
-        <TweakRadio label="Language" value={t.language} options={["pt", "en"]} onChange={(v) => setTweak("language", v)} />
+        <TweakRadio label="Language"  value={t.language} options={["pt", "en"]} onChange={(v) => setTweak("language", v)} />
       </TweaksPanel>
     </div>
   );

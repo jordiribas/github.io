@@ -7,8 +7,8 @@ const { useState, useEffect, useRef, useMemo, useCallback } = React;
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "name": "Jordi Ribas",
   "handle": "jribas",
-  "role": "Analista de Sistemas e Dados",
-  "tagline": "Sistemas que resolvem problemas reais, sem firula.",
+  "role": "Automação & Integrações",
+  "tagline": "Conecto sistemas, elimino trabalho manual e faço os dados chegarem onde precisam.",
   "location": "São José do Rio Preto, SP",
   "email": "jordi@jribas.com.br",
   "linkedin": "https://www.linkedin.com/in/jordiribas/",
@@ -32,19 +32,19 @@ const COPY = {
     statusBusy: "Em projeto · respondo",
     heroIntroLine: "// arquivo: ~/sobre.md",
     heroGreeting: "Olá, eu sou",
-    heroSub: "Analista de sistemas e dados. Construo backends em .NET, interfaces em Angular e automatizo a parte chata pra que o time foque no que importa.",
+    heroSub: "Automação de processos e integração entre sistemas. Conecto APIs, elimino trabalho manual e faço as ferramentas que você já usa conversarem entre si.",
     cta: "Vamos conversar",
     aboutKicker: "01 — sobre",
     aboutTitle: "Sobre.",
     aboutBody: [
-      "Trabalho com desenvolvimento e operação de sistemas para empresas do setor imobiliário e de loteamentos — do CRM ao contrato assinado, passando pela infra que mantém tudo de pé.",
+      "Especializado em automação de processos e integração entre plataformas — n8n, APIs REST, webhooks e qualquer coisa que faça sistemas conversarem sem intervenção manual.",
       "Atuo via firma própria (CNPJ 27.635.336/0001-87), em parceria recorrente com Wagner Fernandes, atendendo Eggs Soluções Imobiliárias, Abovyan Participações e Mangaba Urbanismo.",
-      "Acredito em código simples, decisões pragmáticas e prazos honestos. Fora do teclado: churrasco no quintal, estradas de SP/MG na FZ25 e jogos online quando sobra tempo."
+      "Acredito em decisões pragmáticas e prazos honestos. Fora do teclado: churrasco no quintal, estradas de SP/MG na FZ25 e jogos online quando sobra tempo."
     ],
     aboutFacts: [
       ["Base", "São José do Rio Preto, SP — remoto"],
-      ["Foco", "Sistemas internos, automações e integrações"],
-      ["Stack principal", "C# / .NET Core · TypeScript / Angular · PostgreSQL"],
+      ["Foco", "Automação de processos e integrações entre sistemas"],
+      ["Ferramentas", "n8n · APIs REST · Webhooks · Clicksign · WhatsApp API"],
       ["Em estudo", "AWS Certified Cloud Practitioner (CLF-C02)"],
       ["Disponibilidade", "Projetos pontuais e parcerias contínuas"]
     ],
@@ -89,19 +89,19 @@ const COPY = {
     statusBusy: "On a project · still reply",
     heroIntroLine: "// file: ~/about.md",
     heroGreeting: "Hi, I'm",
-    heroSub: "Systems and data analyst. I build .NET backends, Angular front-ends and automate the boring parts so teams can focus on what matters.",
+    heroSub: "Process automation and system integration. I connect APIs, eliminate manual work and make the tools you already use talk to each other.",
     cta: "Let's talk",
     aboutKicker: "01 — about",
     aboutTitle: "About.",
     aboutBody: [
-      "I build and operate systems for real-estate and land-development companies — from CRM to signed contract, including the infrastructure that keeps it all running.",
+      "Specialized in process automation and platform integration — n8n, REST APIs, webhooks and anything that makes systems talk without manual intervention.",
       "I work through my own company (CNPJ 27.635.336/0001-87), in long-running partnership with Wagner Fernandes, serving Eggs Soluções Imobiliárias, Abovyan Participações and Mangaba Urbanismo.",
-      "I believe in simple code, pragmatic decisions and honest deadlines. Off-keyboard: backyard BBQ, weekend rides on the FZ25 across SP and MG, and online games when time allows."
+      "I believe in pragmatic decisions and honest deadlines. Off-keyboard: backyard BBQ, weekend rides on the FZ25 across SP and MG, and online games when time allows."
     ],
     aboutFacts: [
       ["Based", "São José do Rio Preto, BR — remote"],
-      ["Focus", "Internal systems, automations and integrations"],
-      ["Core stack", "C# / .NET Core · TypeScript / Angular · PostgreSQL"],
+      ["Focus", "Process automation and system integrations"],
+      ["Tooling", "n8n · REST APIs · Webhooks · Clicksign · WhatsApp API"],
       ["Studying", "AWS Certified Cloud Practitioner (CLF-C02)"],
       ["Availability", "One-off projects and ongoing partnerships"]
     ],

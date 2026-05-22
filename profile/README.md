@@ -1,4 +1,3 @@
-<!-- profile v7 -->
 <div align="center">
 
 ```

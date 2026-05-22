@@ -12,24 +12,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
       - name: Sincronizar README para jordiribas/jordiribas
         env:
           TOKEN: ${{ secrets.PROFILE_SYNC_TOKEN }}
         run: |
-          git config --global user.name "jordiribas"
-          git config --global user.email "jordi@jribas.com.br"
-          git config --global credential.helper store
-          echo "https://x-access-token:${TOKEN}@github.com" > ~/.git-credentials
+          SHA=$(curl -sf \
+            -H "Authorization: token ${TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/jordiribas/jordiribas/contents/README.md" \
+            | jq -r '.sha // empty')
 
-          git clone https://github.com/jordiribas/jordiribas.git _profile_repo
+          CONTENT=$(base64 -w 0 profile/README.md)
 
-          cp profile/README.md _profile_repo/README.md
+          if [ -n "$SHA" ]; then
+            DATA=$(jq -n \
+              --arg msg "sync: atualiza perfil a partir do github.io" \
+              --arg content "$CONTENT" \
+              --arg sha "$SHA" \
+              '{message: $msg, content: $content, sha: $sha}')
+          else
+            DATA=$(jq -n \
+              --arg msg "sync: atualiza perfil a partir do github.io" \
+              --arg content "$CONTENT" \
+              '{message: $msg, content: $content}')
+          fi
 
-          cd _profile_repo
-          git add README.md
-          git diff --staged --quiet && echo "Sem mudanças." && exit 0
-          git commit -m "sync: atualiza perfil a partir do github.io"
-          git push origin HEAD
+          curl -sf -X PUT \
+            -H "Authorization: token ${TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/json" \
+            -d "$DATA" \
+            "https://api.github.com/repos/jordiribas/jordiribas/contents/README.md"
+
+          echo "Perfil sincronizado com sucesso."

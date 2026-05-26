@@ -9,6 +9,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        novaversao: resolve(__dirname, 'novaversao.html'),
         privacy: resolve(__dirname, 'privacy.html'),
       },
     },

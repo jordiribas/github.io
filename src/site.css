@@ -6,6 +6,7 @@
   --accent: oklch(82% 0.18 var(--accent-h));
   --accent-hover: oklch(76% 0.18 var(--accent-h));
   --accent-ink: oklch(18% 0.02 var(--accent-h));
+  --kicker: oklch(44% 0.18 var(--accent-h));
 
   --bg: #f2f1ed;
   --bg-soft: #f0f0ea;
@@ -42,6 +43,7 @@
   --accent: oklch(85% 0.18 var(--accent-h));
   --accent-hover: oklch(90% 0.18 var(--accent-h));
   --accent-ink: oklch(15% 0.02 var(--accent-h));
+  --kicker: oklch(72% 0.18 var(--accent-h));
 }
 
 [data-density="compact"] { --base: 14.5px; --row-gap: clamp(48px, 8vh, 96px); }
@@ -385,8 +387,8 @@ main { display: block; }
   margin-bottom: 48px;
 }
 .sec-kicker {
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--accent);
+  font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--kicker);
   font-family: var(--font-mono);
 }
 .sec-title {

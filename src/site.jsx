@@ -139,6 +139,8 @@ const COPY = {
     formSend: "Enviar mensagem",
     formSending: "Enviando…",
     formSent: "Mensagem enviada. Obrigado!",
+    formPrivacy: ["Ao enviar, você concorda com a ", "Política de Privacidade", "."],
+    privacyLink: "Privacidade",
     orDirect: "ou direto:",
     footerLine: "Construído à mão. Sem templates, sem firula.",
     rights: "Todos os direitos reservados."
@@ -233,6 +235,8 @@ const COPY = {
     formSend: "Send message",
     formSending: "Sending…",
     formSent: "Message sent. Thank you!",
+    formPrivacy: ["By sending, you agree to the ", "Privacy Policy", " (in Portuguese)."],
+    privacyLink: "Privacy",
     orDirect: "or direct:",
     footerLine: "Hand-built. No templates, no fluff.",
     rights: "All rights reserved."
@@ -392,7 +396,9 @@ function Nav({ copy, dark, onToggleTheme, themeMode, lang, onLangSwap, onJump, s
   );
 }
 
-function Hero({ copy, name, role, tagline, email, available, time }) {
+function Hero({ copy, name, role, tagline, email, available }) {
+  // relógio fica só aqui: evita re-renderizar a página inteira a cada segundo
+  const time = useTime();
   const greet = useTypewriter(copy.heroGreeting + " ", 32);
   const tName = useTypewriter(name, 60, greet.length === (copy.heroGreeting + " ").length);
   const isoTime = time.toTimeString().slice(0, 8);
@@ -444,7 +450,7 @@ function SectionHeader({ kicker, title }) {
   );
 }
 
-function About({ copy, location }) {
+function About({ copy }) {
   return (
     <section id="about" className="sec sec-about">
       <SectionHeader kicker={copy.aboutKicker} title={copy.aboutTitle} />
@@ -461,7 +467,7 @@ function About({ copy, location }) {
               <span className="bc-dots" aria-hidden><i /><i /><i /></span>
             </div>
             <div className="brand-card-img">
-              <img src="images/perfil-jordi.png" alt="Jordi Ribas" />
+              <img src="/images/perfil-jordi.webp" alt="Jordi Ribas" width="637" height="641" loading="lazy" decoding="async" />
               <span className="bc-scan" aria-hidden />
             </div>
             <figcaption className="brand-card-foot">
@@ -473,7 +479,7 @@ function About({ copy, location }) {
             {copy.aboutFacts.map(([k, v], i) => (
               <div className="fact" key={i}>
                 <dt>{k}</dt>
-                <dd>{i === 0 ? v.replace("Brasil", location).replace("Brazil", location) : v}</dd>
+                <dd>{v}</dd>
               </div>
             ))}
           </dl>
@@ -631,7 +637,7 @@ function Cases({ copy, show }) {
   );
 }
 
-function CopyEmail({ email }) {
+function CopyEmail({ email, lang }) {
   const [copied, setCopied] = useState(false);
   const doCopy = async () => {
     try {
@@ -643,10 +649,10 @@ function CopyEmail({ email }) {
     }
   };
   return (
-    <button type="button" className="copy-btn" onClick={doCopy} aria-label="Copy email">
+    <button type="button" className="copy-btn" onClick={doCopy} aria-label={lang === "en" ? "Copy email" : "Copiar e-mail"}>
       <span className="copy-val">{email}</span>
       <span className={"copy-state " + (copied ? "is-copied" : "")}>
-        {copied ? "copiado ✓" : "copy"}
+        {lang === "en" ? (copied ? "copied ✓" : "copy") : (copied ? "copiado ✓" : "copiar")}
       </span>
     </button>
   );
@@ -679,6 +685,7 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
   const [state, setState] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [touched, setTouched] = useState({ name: false, email: false, phone: false, message: false });
+  const honeypotRef = useRef(null);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const touch = (k) => () => setTouched((t) => ({ ...t, [k]: true }));
@@ -705,6 +712,12 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
     if (state === "sending") return;
     if (!valid) {
       setTouched({ name: true, email: true, phone: true, message: true });
+      return;
+    }
+    // honeypot: humanos não veem o campo; bots que preenchem recebem "sucesso" sem envio
+    if (honeypotRef.current && honeypotRef.current.value) {
+      setState("sent");
+      setTimeout(() => setState("idle"), 4000);
       return;
     }
     setState("sending");
@@ -839,6 +852,10 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
             {touched.message && errors.message ? <span className="field-err">{errors.message}</span> : null}
           </div>
 
+          <div className="hp-field" aria-hidden="true">
+            <label>Website<input ref={honeypotRef} type="text" name="website" tabIndex={-1} autoComplete="off" /></label>
+          </div>
+
           <div className="form-actions">
             <button type="submit" className={"btn btn-primary " + (!valid ? "btn-dis" : "")} disabled={!valid || state === "sending"}>
               <span>
@@ -856,6 +873,9 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
               </a>
             ) : null}
           </div>
+          <p className="form-privacy">
+            {copy.formPrivacy[0]}<a href="/privacy">{copy.formPrivacy[1]}</a>{copy.formPrivacy[2]}
+          </p>
           {state === "error" ? <div className="form-err">{errorMsg}</div> : null}
         </form>
 
@@ -863,7 +883,7 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
           <div className="aside-line"><span className="aside-k">{copy.orDirect}</span></div>
           <div className="aside-link aside-link-static">
             <span className="aside-tag">email</span>
-            <CopyEmail email={email} />
+            <CopyEmail email={email} lang={lang} />
           </div>
           {linkedin ? (
             <a className="aside-link" href={linkedin} target="_blank" rel="noreferrer">
@@ -878,14 +898,16 @@ function Contact({ copy, email, linkedin, webhook, cvUrl, lang }) {
   );
 }
 
-function Footer({ copy, name, time }) {
-  const yr = time.getFullYear();
+function Footer({ copy, name }) {
+  const yr = new Date().getFullYear();
   return (
     <footer className="footer">
       <div className="footer-row">
         <span>© {yr} {name}.</span>
         <span className="footer-mid">{copy.footerLine}</span>
-        <span className="footer-tick">jribas.com.br</span>
+        <span className="footer-tick">
+          <a className="footer-link" href="/privacy">{copy.privacyLink}</a> · jribas.com.br
+        </span>
       </div>
     </footer>
   );
@@ -898,7 +920,6 @@ function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const sysDark = useSystemDark();
   const dark = resolveDark(t.themeMode, sysDark);
-  const time = useTime();
   const lang = t.language === "en" ? "en" : "pt";
   const copy = COPY[lang];
 
@@ -930,6 +951,11 @@ function App() {
     r.style.setProperty("--accent-h", String(t.accentHue));
   }, [dark, t.density, t.gridLines, t.displayFont, t.animationLevel, t.accentHue]);
 
+  useEffect(() => {
+    document.documentElement.lang = lang === "en" ? "en" : "pt-BR";
+    document.title = `JRibas — ${lang === "en" ? "Automation & Integrations" : "Automação & Integrações"}`;
+  }, [lang]);
+
   useReveal(t.animationLevel === "off");
 
   const copyWithLang = useMemo(() => ({ ...copy, language: lang }), [copy, lang]);
@@ -956,10 +982,9 @@ function App() {
           tagline={t.tagline}
           email={t.email}
           available={!!t.available}
-          time={time}
         />
         <Clients copy={copyWithLang} show={!!t.showClients} />
-        <About copy={copyWithLang} location={t.location} />
+        <About copy={copyWithLang} />
         <Work copy={copyWithLang} />
         <Cases copy={copyWithLang} show={!!t.showCases} />
         <Skills copy={copyWithLang} />
@@ -973,7 +998,7 @@ function App() {
         />
       </main>
 
-      <Footer copy={copyWithLang} name={t.name} time={time} />
+      <Footer copy={copyWithLang} name={t.name} />
 
       <TweaksPanel title="Tweaks">
         <TweakSection label="Status & visibilidade" />

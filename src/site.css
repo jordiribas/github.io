@@ -921,6 +921,10 @@ main { display: block; }
 .form-actions {
   display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
 }
+.form-privacy { margin-top: 12px; color: var(--fg-4); font-size: 12px; }
+.form-privacy a, .footer-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.form-privacy a:hover, .footer-link:hover { color: var(--accent); }
+.hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .form-err {
   margin-top: 12px;
   font-family: var(--font-mono);
